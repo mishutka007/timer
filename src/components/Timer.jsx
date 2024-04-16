@@ -1,11 +1,11 @@
-import React, { useRef, useState, memo } from "react";
+import React, { useRef, useState, memo, useCallback } from "react";
 import Button from "./btn";
 function TimerComponent() {
   const [timer, setTimer] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const IntervalId = useRef();
-  const Start = () => {
+  const Start = useCallback(() => {
     if (IntervalId.current) {
       clearInterval(IntervalId.current);
       IntervalId.current = null;
@@ -26,19 +26,18 @@ function TimerComponent() {
         return prevTimer + 1;
       });
     }, 1000);
-  };
-  const Stop = () => {
+  }, []);
+  const Stop = useCallback(() => {
     if (IntervalId.current) {
       clearInterval(IntervalId.current);
       IntervalId.current = null;
     }
-  };
+  }, []);
 
   return (
     <div>
       <h1>Timer</h1>
       <h1>
-        
         {minutes < 10 ? "0" + minutes : minutes}:
         {seconds < 10 ? "0" + seconds : seconds}:
         {timer < 10 ? "0" + timer : timer}

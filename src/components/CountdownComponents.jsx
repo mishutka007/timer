@@ -48,12 +48,12 @@ function CountdownComponents(props) {
     clearInterval(IntervalId.current);
     IntervalId.current = null;
   }
-  const Stop = () => {
+  const Stop = useCallback(() => {
     if (IntervalId.current) {
       clearInterval(IntervalId.current);
       IntervalId.current = null;
     }
-  };
+  },[]);
 const StileHead =styled.h1`
   display: flex;
   flex-direction: column;
