@@ -1,0 +1,30 @@
+:root {
+  display: flex;
+  justify-content: center;
+   width: 100vw;
+  height: 100vh;
+}
+.timerH1{
+  display: flex;
+  justify-content: center;
+    border-radius: 10px;
+    border: 2px solid rgb(51, 53, 175);
+    background-color: whitesmoke;
+}
+.timerH2{
+  display: flex;
+  flex-direction: column;
+justify-content: center;
+  border-radius: 10px;
+    border: 2px solid rgb(51, 53, 175);
+    background-color: whitesmoke;
+}
+.timerH3{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.MuiStack-root{
+  display: flex;
+  justify-content: center;
+}
