@@ -1,83 +1,100 @@
-import React, { useEffect, useRef, useState, memo, useCallback } from "react";
-import Button from "./btn";
+import React, { useMemo, useRef, useState, memo, useCallback } from "react";
+import Button from "./Button";
 import LinearProgress from "@mui/material/LinearProgress";
-import useSound from 'use-sound';
-import sova from "./sova.mp3"
+import useSound from "use-sound";
+import sova from "./sova.mp3";
 import styled from "styled-components";
-function CountdownComponents(props) {
+import TimePickerViews from "./TimePickerViews";
+const StileHead = styled.h1`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+function CountdownComponents() {
   const [timer, setTimer] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [startTime, setStartTime] = useState(0);
+
   const IntervalId = useRef();
-  const[play] = useSound(sova)
-  useEffect(() => {
-    setTimer(props.time);
-    setMinutes(props.seconds);
-    setSeconds(props.minutes);
-  }, [props.time, props.minutes, props.seconds]);
- 
-  const Start= useCallback(() => {
+  const [play] = useSound(sova);
+
+  const Start = useCallback(() => {
     if (IntervalId.current) {
       clearInterval(IntervalId.current);
       IntervalId.current = null;
       return;
     }
+    if (timer === 0) {
+      return;
+    }
     IntervalId.current = setInterval(() => {
       setTimer((prevTimer) => {
-        if (prevTimer <= 0) {
-          setSeconds((prevSeconds) => {
-            if (prevSeconds <= 0) {
-              setMinutes((prevMinutes) => prevMinutes - 1);
-              return 59;
-            }
-            return prevSeconds - 1;
-          });
-          return 59;
+        if (prevTimer < 1) {
+          clearInterval(IntervalId.current);
+          IntervalId.current = null;
+          play();
+          return 0;
         }
         return prevTimer - 1;
       });
-    }, 1000);
-    
-    
-  },[]);
-  if (timer === 1 && minutes <= 0 && seconds <= 0) {
-    play()
-  }
-  if (timer <= 0 && minutes <= 0 && seconds <= 0) {
-    
-    clearInterval(IntervalId.current);
-    IntervalId.current = null;
-  }
+    }, 1);
+  }, [timer]);
+  const Reset = useCallback(() => {
+    Stop();
+    setTimer(startTime);
+  }, [startTime]);
   const Stop = useCallback(() => {
     if (IntervalId.current) {
       clearInterval(IntervalId.current);
       IntervalId.current = null;
     }
-  },[]);
-const StileHead =styled.h1`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
+  }, []);
+  const time = useMemo(() => {
+    const ostatok = timer % (60 * 60);
+    const hoursTime = (timer - ostatok) / (60 * 60);
+    const secondsTime = ostatok % 60;
+    const minutesTime = (ostatok - secondsTime) / 60;
+    const progress =
+      ((secondsTime + minutesTime * 60 + hoursTime * 60 * 60) / startTime) *
+      100;
+
+    return {
+      hoursTime,
+      minutesTime,
+      secondsTime,
+      progress,
+    };
+  }, [timer, startTime]);
+  const Itog = useCallback(() => {
+    return (
+      (time.hoursTime <= 0
+        ? "00"
+        : time.hoursTime < 10
+        ? "0" + time.hoursTime
+        : time.hoursTime) +
+      ":" +
+      (time.minutesTime <= 0
+        ? "00"
+        : time.minutesTime < 10
+        ? "0" + time.minutesTime
+        : time.minutesTime) +
+      ":" +
+      (time.secondsTime <= 0
+        ? "00"
+        : time.secondsTime < 10
+        ? "0" + time.secondsTime
+        : time.secondsTime)
+    );
+  }, [time.hoursTime, time.minutesTime, time.secondsTime]);
   return (
     <div className="timerH3">
-    <h1 >Countdown</h1>
+      <h1>Countdown</h1>
       <StileHead>
-        <div style={{display:"flex",
-      justifyContent:"center"}}>
-        {minutes <= 0 ? "00" : minutes < 10 ? "0" + minutes : minutes}:
-        {seconds <= 0 ? "00" : seconds < 10 ? "0" + seconds : seconds}:
-        {timer <= 0 ? "00" : timer < 10 ? "0" + timer : timer}
-        </div><LinearProgress
-          variant="determinate"
-          value={
-            ((minutes * 3600 + seconds * 60 + timer) /
-              (props.seconds * 3600 + props.minutes * 60 + props.time)) *
-              100 || 0
-          }
-        />
-        </StileHead>
-         <Button
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {Itog()}
+        </div>
+        <LinearProgress variant="determinate" value={time.progress} />
+      </StileHead>
+      <Button
         variant="contained"
         color="success"
         metod={() => {
@@ -92,20 +109,15 @@ const StileHead =styled.h1`
         }}
         text="Стоп"
       />
-      <Button
-        variant="outlined"
-        color="error"
-        metod={() => {
-          setSeconds(0);
-          setMinutes(0);
-          setTimer(0);
+      <Button variant="outlined" color="error" metod={Reset} text="Сброс" />
+      <TimePickerViews
+        sabaka={(time) => {
+          setStartTime(time);
+          setTimer(time);
         }}
-        text="Сброс"
       />
-      
-   </div>  
-    
+    </div>
   );
 }
 
-export default memo (CountdownComponents);
+export default memo(CountdownComponents);
