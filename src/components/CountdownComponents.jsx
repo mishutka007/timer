@@ -38,14 +38,15 @@ function CountdownComponents() {
     }, 1);
   }, [timer]);
   const Reset = useCallback(() => {
-    Stop();
+    stop();
     setTimer(startTime);
   }, [startTime]);
-  const Stop = useCallback(() => {
+  const stop = useCallback(() => {
     if (intervalId.current) {
       clearInterval(intervalId.current);
       intervalId.current = null;
     }
+    
   }, []);
   const time = useMemo(() => {
     const ostatok = timer % (60 * 60);
@@ -56,17 +57,13 @@ function CountdownComponents() {
       ((secondsTime + minutesTime * 60 + hoursTime * 60 * 60) / startTime) *
       100;
     const itog =
-      (hoursTime <= 0 ? "00" : hoursTime < 10 ? "0" + hoursTime : hoursTime) +
+      (hoursTime < 10 ? "0" + hoursTime : hoursTime) +
       ":" +
-      (minutesTime <= 0
-        ? "00"
-        : minutesTime < 10
+      (minutesTime < 10
         ? "0" + minutesTime
         : minutesTime) +
       ":" +
-      (secondsTime <= 0
-        ? "00"
-        : secondsTime < 10
+      (secondsTime < 10
         ? "0" + secondsTime
         : secondsTime);
     return {
@@ -95,7 +92,7 @@ function CountdownComponents() {
       <Button
         variant="outlined"
         metod={() => {
-          Stop();
+          stop();
         }}
         text="Стоп"
       />
