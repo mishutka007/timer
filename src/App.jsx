@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import TimerComponent from "./components/Timer";
 import "./components/timer.css";
 import CountdownComponents from "./components/CountdownComponents";

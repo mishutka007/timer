@@ -5,17 +5,15 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 export default function TimePickerViews(props) {
- 
   return (
-    <LocalizationProvider  dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={["MobileTimePicker"]}>
-        <DemoItem label={''}>
+        <DemoItem label={""}>
           <TimePicker
             views={["hours", "minutes", "seconds"]}
             format={"HH:mm:ss"}
             onAccept={(value) => {
-              props.sabaka(value.$s + value.$m*60 + value.$H * 60 * 60 );
-             
+              props.sabaka(value.$s + value.$m * 60 + value.$H * 60 * 60);
             }}
             ampm={false}
             ampmInClock={false}

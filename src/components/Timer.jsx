@@ -38,9 +38,8 @@ function TimerComponent() {
     <div>
       <h1>Timer</h1>
       <h1>
-        {hour < 10 ? "0" + hour : hour}:
-        {minutes < 10 ? "0" + minutes : minutes}:
-        {seconds < 10 ? "0" + seconds : seconds}
+        {hour < 10 ? "0" + hour : hour}:{minutes < 10 ? "0" + minutes : minutes}
+        :{seconds < 10 ? "0" + seconds : seconds}
       </h1>
       <Button
         variant="contained"

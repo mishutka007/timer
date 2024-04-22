@@ -13,24 +13,23 @@ const StileHead = styled.h1`
 function CountdownComponents() {
   const [timer, setTimer] = useState(0);
   const [startTime, setStartTime] = useState(0);
-
-  const IntervalId = useRef();
+  const intervalId = useRef();
   const [play] = useSound(sova);
 
-  const Start = useCallback(() => {
-    if (IntervalId.current) {
-      clearInterval(IntervalId.current);
-      IntervalId.current = null;
+  const start = useCallback(() => {
+    if (intervalId.current) {
+      clearInterval(intervalId.current);
+      intervalId.current = null;
       return;
     }
     if (timer === 0) {
       return;
     }
-    IntervalId.current = setInterval(() => {
+    intervalId.current = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer < 1) {
-          clearInterval(IntervalId.current);
-          IntervalId.current = null;
+          clearInterval(intervalId.current);
+          intervalId.current = null;
           play();
           return 0;
         }
@@ -43,9 +42,9 @@ function CountdownComponents() {
     setTimer(startTime);
   }, [startTime]);
   const Stop = useCallback(() => {
-    if (IntervalId.current) {
-      clearInterval(IntervalId.current);
-      IntervalId.current = null;
+    if (intervalId.current) {
+      clearInterval(intervalId.current);
+      intervalId.current = null;
     }
   }, []);
   const time = useMemo(() => {
@@ -56,41 +55,32 @@ function CountdownComponents() {
     const progress =
       ((secondsTime + minutesTime * 60 + hoursTime * 60 * 60) / startTime) *
       100;
-
+    const itog =
+      (hoursTime <= 0 ? "00" : hoursTime < 10 ? "0" + hoursTime : hoursTime) +
+      ":" +
+      (minutesTime <= 0
+        ? "00"
+        : minutesTime < 10
+        ? "0" + minutesTime
+        : minutesTime) +
+      ":" +
+      (secondsTime <= 0
+        ? "00"
+        : secondsTime < 10
+        ? "0" + secondsTime
+        : secondsTime);
     return {
-      hoursTime,
-      minutesTime,
-      secondsTime,
+      itog,
       progress,
     };
   }, [timer, startTime]);
-  const Itog = useCallback(() => {
-    return (
-      (time.hoursTime <= 0
-        ? "00"
-        : time.hoursTime < 10
-        ? "0" + time.hoursTime
-        : time.hoursTime) +
-      ":" +
-      (time.minutesTime <= 0
-        ? "00"
-        : time.minutesTime < 10
-        ? "0" + time.minutesTime
-        : time.minutesTime) +
-      ":" +
-      (time.secondsTime <= 0
-        ? "00"
-        : time.secondsTime < 10
-        ? "0" + time.secondsTime
-        : time.secondsTime)
-    );
-  }, [time.hoursTime, time.minutesTime, time.secondsTime]);
+
   return (
     <div className="timerH3">
       <h1>Countdown</h1>
       <StileHead>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          {Itog()}
+          {time.itog}
         </div>
         <LinearProgress variant="determinate" value={time.progress} />
       </StileHead>
@@ -98,7 +88,7 @@ function CountdownComponents() {
         variant="contained"
         color="success"
         metod={() => {
-          Start();
+          start();
         }}
         text="Старт"
       />
